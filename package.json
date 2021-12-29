@@ -1,0 +1,22 @@
+{
+  "name": "clibs-discordbot",
+  "version": "1.0.0",
+  "description": "Save your Discord messages and clips using Clibs!",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/celinashen/clibs-discordbot.git"
+  },
+  "author": "Celina",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/celinashen/clibs-discordbot/issues"
+  },
+  "homepage": "https://github.com/celinashen/clibs-discordbot#readme",
+  "dependencies": {
+    "discord.js": "^13.4.0"
+  }
+}
