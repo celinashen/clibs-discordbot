@@ -7,6 +7,20 @@ const prefix = '!clibs';
 const { token } = require('./config.json');
 //https://discord.com/oauth2/authorize?client_id=925541958426972291&scope=bot&permissions=545394785535
 
+const fs = require('fs');
+
+client.commands = new Discord.Collection();
+
+//Make sure all files are JS files
+const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'))
+for (const file of commandFiles) {
+    const command = require(`./commands/${file}`)
+
+    client.commands.set(command.name, command)
+}
+
+
+
 client.once('ready', () => {
     console.log('Clibs is online')
 });
@@ -22,11 +36,11 @@ client.on('messageCreate', message => {
     const command = args[1].toLowerCase();
 
     if(command === 'store'){
-        message.channel.send('Your message is stored in Clibs!')
+        client.commands.get('store').execute(message,args);
     } else if (command === 'get'){
-        message.channel.send('Your message is retrieved from the Clibs!')
+        client.commands.get('get').execute(message,args);
     } else if (command === 'delete'){
-        message.channel.send('Your message was deleted from Clibs.')
+        client.commands.get('delete').execute(message,args);
     }
 });
 
