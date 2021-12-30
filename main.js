@@ -29,16 +29,20 @@ client.on('messageCreate', message => {
 
     const args = message.content.slice(prefix.length).split(/ +/);
 
-    console.log(args)
-
     const command = args[1].toLowerCase();
+    const tag = args[2].toLowerCase();
 
-    if(command === 'store'){
-        client.commands.get('store').execute(message,args);
-    } else if (command === 'get'){
+    console.log(command)
+    console.log(tag)
+
+    if(command === 'store' && args.length === 3){
+        client.commands.get('store').execute(message,command,tag);
+    } else if (command === 'get' && args.length === 3){
         client.commands.get('get').execute(message,args);
-    } else if (command === 'delete'){
+    } else if (command === 'delete' && args.length === 3){
         client.commands.get('delete').execute(message,args);
+    } else if (args.length > 3){
+        message.channel.send('Please input your command in the following format !clibs [command] [tag]')
     }
 });
 
