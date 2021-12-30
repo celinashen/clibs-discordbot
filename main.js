@@ -19,8 +19,6 @@ for (const file of commandFiles) {
     client.commands.set(command.name, command)
 }
 
-
-
 client.once('ready', () => {
     console.log('Clibs is online')
 });
@@ -43,6 +41,5 @@ client.on('messageCreate', message => {
         client.commands.get('delete').execute(message,args);
     }
 });
-
 
 client.login(token)
