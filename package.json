@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/celinashen/clibs-discordbot#readme",
   "dependencies": {
-    "discord.js": "^13.4.0"
+    "discord.js": "^13.4.0",
+    "dotenv": "^10.0.0",
+    "mongoose": "^6.1.4"
   }
 }

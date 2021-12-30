@@ -1,10 +1,15 @@
+
+const mongoose = require('mongoose')
+
+require('dotenv').config()
+
 const Discord = require('discord.js');
 
 const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] })
 
 const prefix = '!clibs';
 
-const { token } = require('./config.json');
+const { token, mongo_uri } = require('./config.json');
 //https://discord.com/oauth2/authorize?client_id=925541958426972291&scope=bot&permissions=545394785535
 
 const fs = require('fs');
@@ -19,7 +24,14 @@ for (const file of commandFiles) {
     client.commands.set(command.name, command)
 }
 
-client.once('ready', () => {
+client.once('ready', async () => {
+    console.log(mongo_uri)
+    await mongoose.connect(
+        mongo_uri,
+        {
+            keepAlive: true
+        }
+    )
     console.log('Clibs is online')
 });
 
