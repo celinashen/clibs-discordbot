@@ -108,10 +108,9 @@ client.on('messageCreate', async (message) => {
                 ]
             })
             if (!channelReq){ //If this is a new message in the channel, create a new channel entry
-                //TODO: Can't figure out how to push new channel ids to the array if server id exists but not channel 
                 console.log("channel doesn't exist")
-                clibsStorage.updateOne(
-                    {guild_id: serverId},
+                const newupdate = await clibsStorage.updateOne(
+                    { guild_id: serverId },
                     {
                         $push:{
                             channels: {
@@ -133,7 +132,25 @@ client.on('messageCreate', async (message) => {
                 )
             }
             else { //Check if tag already exists, if it doesn't, create a new one
-                console.log("Channel exists in database")
+                const tagReq = await clibsStorage.findOne({
+                    $and: [
+                        {guild_id: serverId},
+                        {
+                            channels:{
+                                $elemMatch:{
+                                    channel_id: channelId
+                                }
+                            }
+                        }
+                    ]
+                })
+
+                if(!tagReq){
+
+                } else {
+
+                }
+
             }
         }
 
