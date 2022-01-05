@@ -178,15 +178,39 @@ client.on('messageCreate', async (message) => {
                             }
                         }
                     )
-                    console.log(newTagUpdate)
-                } else { //If tag exists, append the new message + link  to the array --> Check if there's a new message
-                    console.log("Sorry, that tag already exists!")
+                } else { //If tag exists, store new message + link
+                    const newMessageUpdate = await clibsStorage.updateOne({
+                        $and: [
+                            {guild_id: serverId},
+                            {
+                                channels:{
+                                    $elemMatch:{
+                                        channel_id: channelId,
+                                        tags: {
+                                            $elemMatch: {
+                                                tag_name: tagString
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        $push: {
+                            "channels.$[].tags.$[].messages": {
+                                display_message: "hello",
+                                message_link: messageLink
+                            }
+                                
+                            
+                        }
+                    }
+                )
                 }
 
             }
         }
-
-
         //new document for each guild
 
 
