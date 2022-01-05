@@ -5,21 +5,17 @@ module.exports = {
     description:"Read for info on how to use the Clibs bot!",
     execute(message, command, tag){
 
-        // const ClibsStorage = require('../schema.js')
-        const { MessageEmbed, CommandInteractionOptionResolver } = require('discord.js');
+        const { MessageEmbed } = require('discord.js');
 
         const serverId = message.guild.id
         const channelId = message.channel.id
         const messageId = message.id
         const tagString = tag
 
-        // console.log(message.content)
-        // console.log(`https://discordapp.com/channels/${serverId}/${channelId}/${messageId}`)
-
         const exampleEmbed = new MessageEmbed()
         .setColor('#FFC900')
         .setTitle('Wave hello to Clibs!')
-        .setURL(`https://discordapp.com/channels/${serverId}/${channelId}/${messageId}`)
+        .setURL(`https://discordapp.com/channels/${serverId}/${channelId}/${messageId}`) //Change URL to an info page or repo page later
         .setAuthor({ name: 'About Clibs', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
         .setDescription(
             "Clibs helps you categorize and store references to important files in your channels - much like an in-house Discord library! Use Clibs and label your messages to sort and retrieve your important messages/files based on their tags.")
