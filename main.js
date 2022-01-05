@@ -56,7 +56,6 @@ client.on('messageCreate', async (message) => {
     
 
     if(command === 'store' && args.length === 3){
-        // await client.commands.get('store').execute(message,command,tag);
         const serverId = message.guild.id
         const channelId = message.channel.id
         const messageId = message.id
@@ -166,7 +165,7 @@ client.on('messageCreate', async (message) => {
                         },
                         {
                             $push: {
-                                "channels.$[].tags":{
+                                "channels.$[channel].tags":{
                                     tag_name: tagString,
                                     messages: [
                                         {
@@ -176,6 +175,11 @@ client.on('messageCreate', async (message) => {
                                     ] 
                                 }
                             }
+                        },
+                        {
+                            arrayFilters: [
+                                { "channel.channel_id": channelId}
+                            ]
                         }
                     )
                 } else { //If tag exists, store new message + link
@@ -198,25 +202,24 @@ client.on('messageCreate', async (message) => {
                     },
                     {
                         $push: {
-                            "channels.$[].tags.$[].messages": {
+                            "channels.$[channel].tags.$[tag].messages": {
                                 display_message: "hello",
                                 message_link: messageLink
                             }
-                                
-                            
                         }
+                    },
+                    {
+                        arrayFilters: [
+                            { "channel.channel_id": channelId },
+                            { "tag.tag_name": tagString }
+                        ]
                     }
                 )
                 }
 
             }
         }
-        //new document for each guild
-
-
-        
-
-
+        await client.commands.get('store').execute(message,command,tag);
     } else if (command === 'get' && args.length === 3){
         client.commands.get('get').execute(message,args);
     } else if (command === 'delete' && args.length === 3){

@@ -12,10 +12,9 @@ module.exports = {
         const messageId = message.id
         const tagString = tag
 
-        console.log(message.content)
-        console.log(`https://discordapp.com/channels/${serverId}/${channelId}/${messageId}`)
-        message.channel.send('This is a stored message')
-        
+        // console.log(message.content)
+        // console.log(`https://discordapp.com/channels/${serverId}/${channelId}/${messageId}`)
+        message.channel.send("We've stored your content in Clibs!")
     }
 }
 
