@@ -10,10 +10,7 @@ const prefix = '!clibs';
 const clibsStorage = require('./schema')
 //https://discord.com/oauth2/authorize?client_id=925541958426972291&scope=bot&permissions=545394785535
 
-
 client.commands = new Discord.Collection();
-
-
 
 //Make sure all files are JS files
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'))
@@ -32,17 +29,15 @@ client.once('ready', async () => {
             useUnifiedTopology: true,
             keepAlive: true
         }
-        
     ).then(() => {
         console.log('Clibs is online')
     }).catch((err) => { 
         console.log(err)
     })
-
 });
 
-
 //https://www.youtube.com/watch?v=a3Gz_7KEJkQ&ab_channel=WornOffKeys
+
 
 client.on('messageCreate', async (message) => {
 
@@ -50,10 +45,15 @@ client.on('messageCreate', async (message) => {
 
     const args = message.content.slice(prefix.length).split(/ +/);
 
-    const command = args[1].toLowerCase();
-    const tag = args[2].toLowerCase();
+    let command = ""
+    let tag = ""
 
-    
+    if(args[1]){
+        command = args[1].toLowerCase();
+    }
+    if (args[2]){
+        tag = args[2].toLowerCase();
+    }
 
     if(command === 'store' && args.length === 3){
         const serverId = message.guild.id
@@ -216,7 +216,6 @@ client.on('messageCreate', async (message) => {
                     }
                 )
                 }
-
             }
         }
         await client.commands.get('store').execute(message,command,tag);
@@ -224,8 +223,10 @@ client.on('messageCreate', async (message) => {
         client.commands.get('get').execute(message,args);
     } else if (command === 'delete' && args.length === 3){
         client.commands.get('delete').execute(message,args);
-    } else if (args.length > 3){
-        message.channel.send('Please input your command in the following format !clibs [command] [tag]')
+    } else if (command === "info"){
+        client.commands.get('info').execute(message,command,tag);
+    } else {
+        message.channel.send("Please try again, that is an invalid command.")
     }
 });
 
