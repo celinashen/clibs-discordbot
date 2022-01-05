@@ -8,7 +8,7 @@ const schema = new mongoose.Schema({
             channel_id: String, 
             tags: [
                 {
-                    display_tag: String,
+                    tag_name: String,
                     messages: [
                         {
                             display_message: String,

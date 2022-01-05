@@ -72,14 +72,14 @@ client.on('messageCreate', async (message) => {
         //If server doesn't exist, add new document with new info
         if(!guildReq){
             console.log("printed at top of guild req")
-            const storedMessage = new clibsStorage({
+            const newGuildUpdate = new clibsStorage({
                 guild_id: serverId,
                 channels: [
                     {
                         channel_id:channelId, 
                         tags: [
                             {
-                                display_tag: tagString,
+                                tag_name: tagString,
                                 messages: [
                                     {
                                         display_message: "hello",
@@ -109,7 +109,7 @@ client.on('messageCreate', async (message) => {
             })
             if (!channelReq){ //If this is a new message in the channel, create a new channel entry
                 console.log("channel doesn't exist")
-                const newupdate = await clibsStorage.updateOne(
+                const newChannelUpdate = await clibsStorage.updateOne(
                     { guild_id: serverId },
                     {
                         $push:{
@@ -117,7 +117,7 @@ client.on('messageCreate', async (message) => {
                                 channel_id: channelId,
                                 tags: [
                                     {
-                                        display_tag: tagString,
+                                        tag_name: tagString,
                                         messages: [
                                             {
                                                 display_message: "hello",
@@ -138,17 +138,49 @@ client.on('messageCreate', async (message) => {
                         {
                             channels:{
                                 $elemMatch:{
-                                    channel_id: channelId
+                                    channel_id: channelId,
+                                    tags: {
+                                        $elemMatch: {
+                                            tag_name: tagString
+                                        }
+                                    }
                                 }
                             }
                         }
                     ]
                 })
-
-                if(!tagReq){
-
-                } else {
-
+                console.log(tagReq)
+                if(!tagReq){ //If tag doesn't exist, create a new tag in tag array
+                    console.log("tag doesn't exist")
+                    const newTagUpdate = await clibsStorage.updateOne({
+                            $and: [
+                                {guild_id: serverId},
+                                {
+                                    channels:{
+                                        $elemMatch:{
+                                            channel_id: channelId
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            $push: {
+                                "channels.$[].tags":{
+                                    tag_name: tagString,
+                                    messages: [
+                                        {
+                                            display_message: "hello",
+                                            message_link: messageLink
+                                        }
+                                    ] 
+                                }
+                            }
+                        }
+                    )
+                    console.log(newTagUpdate)
+                } else { //If tag exists, append the new message + link  to the array --> Check if there's a new message
+                    console.log("Sorry, that tag already exists!")
                 }
 
             }
