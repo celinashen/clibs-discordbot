@@ -28,7 +28,7 @@ module.exports = {
         //     console.log("printed parsed before")
 
             const getEmbed = new MessageEmbed()
-                .setColor('#0099ff')
+                .setColor('#FFC900')
                 .setTitle(`Tag: ${tagString}`)
                 .setDescription(`Here are your saved messages stored under ${tagString}`)
                 .addFields(...messagesArray)
