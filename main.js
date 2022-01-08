@@ -250,7 +250,7 @@ client.on('messageCreate', async (message) => {
             }
         ])
         console.log(getMessages)
-        //client.commands.get('get').execute(message,args);
+        client.commands.get('get').execute(message,getMessages, tagString);
 
     } else if (command === 'delete' && args.length === 3){
         client.commands.get('delete').execute(message,args);
