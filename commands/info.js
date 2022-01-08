@@ -12,7 +12,7 @@ module.exports = {
         const messageId = message.id
         const tagString = tag
 
-        const exampleEmbed = new MessageEmbed()
+        const infoEmbed = new MessageEmbed()
         .setColor('#FFC900')
         .setTitle('Wave hello to Clibs!')
         .setURL(`https://github.com/celinashen/clibs-discordbot`) //Change URL to an info page or repo page later
@@ -35,6 +35,6 @@ module.exports = {
         // .setImage('https://i.imgur.com/AfFp7pu.png')
         // .setFooter('Some footer text here', 'https://i.imgur.com/AfFp7pu.png');
 
-        message.channel.send({ embeds: [exampleEmbed] });
+        message.channel.send({ embeds: [infoEmbed] });
     }
 }
