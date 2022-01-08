@@ -253,7 +253,62 @@ client.on('messageCreate', async (message) => {
         client.commands.get('get').execute(message,getMessages, tagString);
 
     } else if (command === 'delete' && args.length === 3){
-        client.commands.get('delete').execute(message,args);
+        const deleteTag = await clibsStorage.updateOne({
+            $and: [
+                {guild_id: serverId},
+                {
+                    channels:{
+                        $elemMatch:{
+                            channel_id: channelId
+                        }
+                    }
+                }
+            ]},
+            {
+                $pull: {
+                    "channels.$[channel].tags":{
+                        tag_name: tagString,
+                    }
+                }
+            },
+            {
+                arrayFilters: [
+                    { "channel.channel_id": channelId }
+                ]
+            }
+        )
+
+        message.channel.send(`${tagString} and its messages are deleted.`)
+
+        
+    } else if (command === 'delete' && args.length === 4){
+        const deleteMessage = await clibsStorage.updateOne({
+            $and: [
+                {guild_id: serverId},
+                {
+                    channels:{
+                        $elemMatch:{
+                            channel_id: channelId
+                        }
+                    }
+                }
+            ]},
+            {
+                $pull: {
+                    "channels.$[channel].tags.$[tag].messages":{
+                        display_message: messageName,
+                    }
+                }
+            },
+            {
+                arrayFilters: [
+                    { "channel.channel_id": channelId },
+                    { "tag.tag_name": tagString }
+                ]
+            }
+        )
+
+        message.channel.send(`${messageName} was deleted.`)
         
     } else if (command === "info"){
         client.commands.get('info').execute(message,command,tag);
