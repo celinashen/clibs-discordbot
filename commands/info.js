@@ -16,10 +16,10 @@ module.exports = {
         .setColor('#FFC900')
         .setTitle('Wave hello to Clibs!')
         .setURL(`https://github.com/celinashen/clibs-discordbot`) //Change URL to an info page or repo page later
-        .setAuthor({ name: 'About Clibs', iconURL: 'https://i.imgur.com/nMAXe3s.png', url: 'https://discord.js.org' })
+        .setAuthor({ name: 'About Clibs', iconURL: 'https://i.imgur.com/vlJX3FD.png', url: 'https://github.com/celinashen/clibs-discordbot' })
         .setDescription(
             "Clibs helps you categorize and store references to important files in your channels - much like an in-house Discord library! Use Clibs and label your messages to sort and retrieve your important messages/files based on their tags.")
-        .setThumbnail('https://i.imgur.com/nMAXe3s.png')
+        .setThumbnail('https://i.imgur.com/vlJX3FD.png')
         .addField('\u200B', '\u200B')
         .addField("Clibs Commands", "Your tag name should not have any spaces or special characters.")
         .addFields(
