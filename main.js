@@ -55,16 +55,18 @@ client.on('messageCreate', async (message) => {
         tag = args[2].toLowerCase();
     }
 
-    if(command === 'store' && args.length === 3){
-        const serverId = message.guild.id
-        const channelId = message.channel.id
-        const messageId = message.id
-        const tagString = tag
-        const messageLink = `https://discordapp.com/channels/${serverId}/${channelId}/${messageId}`
 
-        console.log("Server ID: ", serverId)
-        console.log("Channel ID: ", channelId)
-        console.log("Tag Name: ", tag)
+    const serverId = message.guild.id
+    const channelId = message.channel.id
+    const messageId = message.id
+    const tagString = tag
+    const messageLink = `https://discordapp.com/channels/${serverId}/${channelId}/${messageId}`
+
+    console.log("Server ID: ", serverId)
+    console.log("Channel ID: ", channelId)
+    console.log("Tag Name: ", tagString)
+
+    if(command === 'store' && args.length === 3){
 
         const guildReq = await clibsStorage.findOne({guild_id: "925164769865003009"})
 
@@ -90,7 +92,7 @@ client.on('messageCreate', async (message) => {
                     }
                 ]
             });
-            await storedMessage.save();
+            await newGuildUpdate.save();
             console.log("reached guild req")
         } else { //If guild already exists, check if channel exists in the channels array of the document
             console.log("printed at top of channel req")
@@ -220,7 +222,63 @@ client.on('messageCreate', async (message) => {
         }
         await client.commands.get('store').execute(message,command,tag);
     } else if (command === 'get' && args.length === 3){
-        client.commands.get('get').execute(message,args);
+        const getMessages = await clibsStorage.aggregate([
+            {
+                $match: { 
+                    "guild_id": serverId,
+                    "channels.channel_id": channelId,
+                    "channels.tags.tag_name": tagString
+                }
+            },
+            { $unwind: "$channels" },
+            { $unwind: "$channels.tags" },
+            { $unwind: "$channels.tags.messages" },
+            {
+                $match: {
+                    "channels.tags.tag_name": tagString
+                }
+            },
+            {
+                $replaceWith: '$channels.tags.messages'
+            }
+            // {
+            //     $project: {
+            //         "_id": 0,
+            //         results: {
+            //             $filter: {
+            //                 input: "$channels.tags",
+            //                 as: "tag",
+            //                 cond: { $eq: ["$$tag.tag_name", tagString] }
+            //             }
+            //         }
+            //     }
+            // },
+            // { $replaceRoot: { newRoot: "$results" } }
+            // {
+            //     $project: {
+            //         "_id": 0,
+            //         // "channels.channel_id": 1,
+            //         // "channel.tags": {
+            //         //     $filter: {
+            //         //         input: { $objectToArray: "$tags" },
+            //         //         as : "tag",
+            //         //         cond: { $eq: [ "$$tag.tag_name", "newtag" ]}
+            //         //     }
+            //         //     // tags: {
+            //         //     //     $filter: {
+            //         //     //         input: "$channels.tags",
+            //         //     //         as: "tag",
+            //         //     //         cond: { $eq: ["$$tag.tag_name", tagString] }
+            //         //     //     }
+            //         //     // }
+            //         // }
+            //         // "channels.tags": 1,
+            //         // "channels.tags.messages": 1
+            //     }
+            // }
+        ])
+        console.log(getMessages)
+        //client.commands.get('get').execute(message,args);
 
     } else if (command === 'delete' && args.length === 3){
         client.commands.get('delete').execute(message,args);
