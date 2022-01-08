@@ -47,6 +47,7 @@ client.on('messageCreate', async (message) => {
 
     let command = ""
     let tag = ""
+    let messageDisplay = ""
 
     if(args[1]){
         command = args[1].toLowerCase();
@@ -54,19 +55,23 @@ client.on('messageCreate', async (message) => {
     if (args[2]){
         tag = args[2].toLowerCase();
     }
+    if (args[3]){
+        messageDisplay = args[3].toLowerCase();
+    }
 
 
     const serverId = message.guild.id
     const channelId = message.channel.id
     const messageId = message.id
     const tagString = tag
+    const messageName = messageDisplay
     const messageLink = `https://discordapp.com/channels/${serverId}/${channelId}/${messageId}`
 
     console.log("Server ID: ", serverId)
     console.log("Channel ID: ", channelId)
     console.log("Tag Name: ", tagString)
 
-    if(command === 'store' && args.length === 3){
+    if(command === 'store' && args.length === 4){
 
         const guildReq = await clibsStorage.findOne({guild_id: "925164769865003009"})
 
@@ -83,7 +88,7 @@ client.on('messageCreate', async (message) => {
                                 tag_name: tagString,
                                 messages: [
                                     {
-                                        display_message: "hello",
+                                        display_message: messageName,
                                         message_link: messageLink
                                     }
                                 ]
@@ -121,7 +126,7 @@ client.on('messageCreate', async (message) => {
                                         tag_name: tagString,
                                         messages: [
                                             {
-                                                display_message: "hello",
+                                                display_message: messageName,
                                                 message_link: messageLink
                                             }
                                         ]
@@ -171,7 +176,7 @@ client.on('messageCreate', async (message) => {
                                     tag_name: tagString,
                                     messages: [
                                         {
-                                            display_message: "hello",
+                                            display_message: messageName,
                                             message_link: messageLink
                                         }
                                     ] 
@@ -205,7 +210,7 @@ client.on('messageCreate', async (message) => {
                     {
                         $push: {
                             "channels.$[channel].tags.$[tag].messages": {
-                                display_message: "hello",
+                                display_message: messageName,
                                 message_link: messageLink
                             }
                         }
@@ -230,6 +235,8 @@ client.on('messageCreate', async (message) => {
                     "channels.tags.tag_name": tagString
                 }
             },
+            // the following $unwind stages will convert your arrays
+            // to objects, so it would be easier to filter the messages
             { $unwind: "$channels" },
             { $unwind: "$channels.tags" },
             { $unwind: "$channels.tags.messages" },
@@ -241,41 +248,6 @@ client.on('messageCreate', async (message) => {
             {
                 $replaceWith: '$channels.tags.messages'
             }
-            // {
-            //     $project: {
-            //         "_id": 0,
-            //         results: {
-            //             $filter: {
-            //                 input: "$channels.tags",
-            //                 as: "tag",
-            //                 cond: { $eq: ["$$tag.tag_name", tagString] }
-            //             }
-            //         }
-            //     }
-            // },
-            // { $replaceRoot: { newRoot: "$results" } }
-            // {
-            //     $project: {
-            //         "_id": 0,
-            //         // "channels.channel_id": 1,
-            //         // "channel.tags": {
-            //         //     $filter: {
-            //         //         input: { $objectToArray: "$tags" },
-            //         //         as : "tag",
-            //         //         cond: { $eq: [ "$$tag.tag_name", "newtag" ]}
-            //         //     }
-            //         //     // tags: {
-            //         //     //     $filter: {
-            //         //     //         input: "$channels.tags",
-            //         //     //         as: "tag",
-            //         //     //         cond: { $eq: ["$$tag.tag_name", tagString] }
-            //         //     //     }
-            //         //     // }
-            //         // }
-            //         // "channels.tags": 1,
-            //         // "channels.tags.messages": 1
-            //     }
-            // }
         ])
         console.log(getMessages)
         //client.commands.get('get').execute(message,args);
@@ -286,7 +258,8 @@ client.on('messageCreate', async (message) => {
     } else if (command === "info"){
         client.commands.get('info').execute(message,command,tag);
     } else {
-        message.channel.send("Please try again, that is an invalid command.")
+        message.channel.send("Please try again, that is an invalid command or input the correct number of inputs.")
+        client.commands.get('info').execute(message,command,tag);
     }
 });
 
