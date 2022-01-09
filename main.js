@@ -36,8 +36,6 @@ client.once('ready', async () => {
     })
 });
 
-//https://www.youtube.com/watch?v=a3Gz_7KEJkQ&ab_channel=WornOffKeys
-
 
 client.on('messageCreate', async (message) => {
 
@@ -59,7 +57,6 @@ client.on('messageCreate', async (message) => {
         messageDisplay = args[3].toLowerCase();
     }
 
-
     const serverId = message.guild.id
     const channelId = message.channel.id
     const messageId = message.id
@@ -67,17 +64,16 @@ client.on('messageCreate', async (message) => {
     const messageName = messageDisplay
     const messageLink = `https://discordapp.com/channels/${serverId}/${channelId}/${messageId}`
 
-    console.log("Server ID: ", serverId)
-    console.log("Channel ID: ", channelId)
-    console.log("Tag Name: ", tagString)
+    // console.log("Server ID: ", serverId)
+    // console.log("Channel ID: ", channelId)
+    // console.log("Tag Name: ", tagString)
 
     if(command === 'store' && args.length === 4){
 
-        const guildReq = await clibsStorage.findOne({guild_id: "925164769865003009"})
+        const guildReq = await clibsStorage.findOne( {guild_id: serverId} )
 
         //If server doesn't exist, add new document with new info
         if(!guildReq){
-            console.log("printed at top of guild req")
             const newGuildUpdate = new clibsStorage({
                 guild_id: serverId,
                 channels: [
@@ -98,9 +94,7 @@ client.on('messageCreate', async (message) => {
                 ]
             });
             await newGuildUpdate.save();
-            console.log("reached guild req")
         } else { //If guild already exists, check if channel exists in the channels array of the document
-            console.log("printed at top of channel req")
             const channelReq = await clibsStorage.findOne({
                 $and: [
                     {guild_id: serverId},
@@ -114,7 +108,6 @@ client.on('messageCreate', async (message) => {
                 ]
             })
             if (!channelReq){ //If this is a new message in the channel, create a new channel entry
-                console.log("channel doesn't exist")
                 const newChannelUpdate = await clibsStorage.updateOne(
                     { guild_id: serverId },
                     {
@@ -155,9 +148,7 @@ client.on('messageCreate', async (message) => {
                         }
                     ]
                 })
-                console.log(tagReq)
                 if(!tagReq){ //If tag doesn't exist, create a new tag in tag array
-                    console.log("tag doesn't exist")
                     const newTagUpdate = await clibsStorage.updateOne({
                             $and: [
                                 {guild_id: serverId},
@@ -246,10 +237,9 @@ client.on('messageCreate', async (message) => {
                 }
             },
             {
-                $replaceWith: '$channels.tags.messages'
+                $replaceWith: '$channels.tags.messages' //Return the array instead of the document
             }
         ])
-        console.log(getMessages)
         client.commands.get('get').execute(message,getMessages, tagString);
 
     } else if (command === 'delete' && args.length === 3){
@@ -277,7 +267,6 @@ client.on('messageCreate', async (message) => {
                 ]
             }
         )
-
         message.channel.send(`${tagString} and its messages are deleted.`)
 
         
@@ -307,7 +296,6 @@ client.on('messageCreate', async (message) => {
                 ]
             }
         )
-
         message.channel.send(`${messageName} was deleted.`)
         
     } else if (command === "info"){
