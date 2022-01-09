@@ -1,4 +1,4 @@
-//message.channel.send('Please input your command in the following format !clibs [command] [tag name]' + '\n' + "Possible comm")
+
 
 module.exports = {
     name: "info",
