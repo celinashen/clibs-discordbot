@@ -9,6 +9,7 @@ For example, if I hit a clip and uploaded it to a Discord channel, I would use '
 # 📑 Commands 📑
 
 | Command | Description | Example |
+| ------------- | ------------- | ------------- |
 | :question: !clibs info | Learn about Clibs's commands | !clibs info |
 | :inbox_tray: !clibs store <tag-name> <message-name> | Use this command in the message you want to save with a tag name (must not include spaces) | !clibs store celina ace |
 | :mailbox_with_mail: !clibs get <tag-name> | Retrieve all messages/files that are stored under <tag-name> | !clibs get celina |
