@@ -1,3 +1,4 @@
+require('dotenv').config()
 
 const mongoose = require('mongoose')
 const Discord = require('discord.js');
@@ -11,6 +12,10 @@ const clibsStorage = require('./schema')
 //https://discord.com/oauth2/authorize?client_id=925541958426972291&scope=bot&permissions=545394785535
 
 client.commands = new Discord.Collection();
+
+var token = process.env.TOKEN
+var mongo_uri = process.env.MONGO_URI
+
 
 //Make sure all files are JS files
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'))
