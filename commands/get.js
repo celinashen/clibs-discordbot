@@ -15,10 +15,10 @@ module.exports = {
         var messagesArray = getMessages.map((messageObject) => {
             return { name: '\u200B', value: `[${messageObject.display_message}](${messageObject.message_link})`, inline: true }
         })
-        
+
         const getEmbed = new MessageEmbed()
             .setColor('#FFC900')
-            .setTitle(`Tag: ${tagString}`)
+            .setTitle(`Clibs retrieved your items!`)
             .setDescription(`Here are your saved messages stored under ${tagString}`)
             .addFields(...messagesArray)
 
