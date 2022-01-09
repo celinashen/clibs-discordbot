@@ -26,6 +26,15 @@ for (const file of commandFiles) {
 }
 
 client.once('ready', async () => {
+
+    client.user.setPresence({
+        status: "online",  //You can show online, idle....
+        game: {
+            name: "Using !clibs info",  //The message shown
+            type: "LISTENING" //PLAYING: WATCHING: LISTENING: STREAMING:
+        }
+    });
+
     await mongoose.connect(
         mongo_uri,
         {
@@ -42,14 +51,6 @@ client.once('ready', async () => {
 
 
 client.on('messageCreate', async (message) => {
-
-    client.user.setPresence({
-        status: "online",  //You can show online, idle....
-        game: {
-            name: "Using !clibs info",  //The message shown
-            type: "LISTENING" //PLAYING: WATCHING: LISTENING: STREAMING:
-        }
-    });
 
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
