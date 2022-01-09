@@ -21,7 +21,7 @@ module.exports = {
             "Clibs helps you categorize and store references to important files in your channels - much like an in-house Discord library! Use Clibs and label your messages to sort and retrieve your important messages/files based on their tags.")
         .setThumbnail('https://i.imgur.com/vlJX3FD.png')
         .addField('\u200B', '\u200B')
-        .addField("Clibs Commands", "Your tag name should not have any spaces or special characters.")
+        .addField("Clibs Commands", "Your tag name should not contain any spaces.")
         .addFields(
             { name: '\u2753 !clibs info', value: "Learn about Clibs's commands"},
             { name: ':inbox_tray: !clibs store <tag-name> <message-name>', value: 'Use this command in the message you want to save with a tag name (must not include spaces)'},
