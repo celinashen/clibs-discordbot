@@ -1,5 +1,6 @@
 # Clibs
-Save and categorize your Discord messages and clips using Clibs bot!
+Save and categorize your Discord messages and clips using Clibs bot!<br/>
+Add this bot to your server [here](https://discord.com/oauth2/authorize?client_id=925541958426972291&scope=bot&permissions=545394785535).
 
 ## 🤖 About 🤖
 Clibs helps you categorize and store references to important files/messages in your channels - much like an in-house Discord library! Use Clibs and label your messages to sort and retrieve your important messages/files based on their tags. 
