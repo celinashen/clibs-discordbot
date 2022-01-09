@@ -35,7 +35,7 @@ client.once('ready', async () => {
             keepAlive: true
         }
     ).then(() => {
-        client.user.setActivity(' | Use !clibs info', { type: 'WATCHING' }) // STREAMING, WATCHING, CUSTOM_STATUS, PLAYING, COMPETING    
+        client.user.setActivity(' | Use !clibs info', { type: 'PLAYING' }) // STREAMING, WATCHING, CUSTOM_STATUS, PLAYING, COMPETING    
 
         console.log('Clibs is online')
         
@@ -62,8 +62,11 @@ client.on('messageCreate', async (message) => {
         tag = args[2].toLowerCase();
     }
     if (args[3]){
-        messageDisplay = args[3].toLowerCase();
+        messageDisplayArray = args.slice(3,args.length)
+        messageDisplay = messageDisplayArray.join(' ')
     }
+
+    console.log(messageDisplay)
 
     const serverId = message.guild.id
     const channelId = message.channel.id
@@ -72,11 +75,12 @@ client.on('messageCreate', async (message) => {
     const messageName = messageDisplay
     const messageLink = `https://discordapp.com/channels/${serverId}/${channelId}/${messageId}`
 
-    // console.log("Server ID: ", serverId)
-    // console.log("Channel ID: ", channelId)
-    // console.log("Tag Name: ", tagString)
+    console.log("Server ID: ", serverId)
+    console.log("Channel ID: ", channelId)
+    console.log("Tag Name: ", tagString)
+    console.log("Message Name: ", messageDisplay)
 
-    if(command === 'store' && args.length === 4){
+    if(command === 'store' && args.length >= 4){ //Store messages in a database
 
         const guildReq = await clibsStorage.findOne( {guild_id: serverId} )
 
@@ -225,7 +229,7 @@ client.on('messageCreate', async (message) => {
             }
         }
         await client.commands.get('store').execute(message,command,tag);
-    } else if (command === 'get' && args.length === 3){
+    } else if (command === 'get' && args.length === 3){ //Get all messages under a tag
         const getMessages = await clibsStorage.aggregate([
             {
                 $match: { 
@@ -250,7 +254,7 @@ client.on('messageCreate', async (message) => {
         ])
         client.commands.get('get').execute(message,getMessages, tagString);
 
-    } else if (command === 'delete' && args.length === 3){
+    } else if (command === 'delete' && args.length === 3){ //Delete a tag
         const deleteTag = await clibsStorage.updateOne({
             $and: [
                 {guild_id: serverId},
@@ -278,7 +282,7 @@ client.on('messageCreate', async (message) => {
         message.channel.send(`${tagString} and its messages are deleted.`)
 
         
-    } else if (command === 'delete' && args.length === 4){
+    } else if (command === 'delete' && args.length >= 4){ //Delete a specific message
         const deleteMessage = await clibsStorage.updateOne({
             $and: [
                 {guild_id: serverId},
