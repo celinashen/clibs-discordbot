@@ -1,7 +1,7 @@
 
 const mongoose = require('mongoose')
 const Discord = require('discord.js');
-const { token, mongo_uri } = require('./config.json');
+// const { token, mongo_uri } = require('./config.json');
 const fs = require('fs');
 
 const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] })
