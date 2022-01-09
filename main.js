@@ -310,6 +310,31 @@ client.on('messageCreate', async (message) => {
         )
         message.channel.send(`${messageName} was deleted.`)
         
+    } else if (command === "display" && args.length === 2){
+
+
+        const getTags = await clibsStorage.aggregate([
+            {
+                $match: { 
+                    "guild_id": serverId,
+                    "channels.channel_id": channelId,
+                }
+            },
+            // the following $unwind stages will convert your arrays
+            // to objects, so it would be easier to filter the messages
+            { $unwind: "$channels" },
+            { $unwind: "$channels.tags" },
+            {
+                $match: {
+                    "channels.channel_id": channelId
+                }
+            },
+            {
+                $replaceWith: '$channels.tags' //Return the array of tags instead of the document
+            }
+        ])
+        client.commands.get('display').execute(message, getTags);
+
     } else if (command === "info"){
         client.commands.get('info').execute(message,command,tag);
     } else {
