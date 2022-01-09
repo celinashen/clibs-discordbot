@@ -21,7 +21,6 @@ for (const file of commandFiles) {
 }
 
 client.once('ready', async () => {
-    console.log(mongo_uri)
     await mongoose.connect(
         mongo_uri,
         {
