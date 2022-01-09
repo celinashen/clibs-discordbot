@@ -4,7 +4,7 @@ Save and categorize your Discord messages and clips using Clibs bot!
 # 🤖 About 🤖
 Clibs helps you categorize and store references to important files/messages in your channels - much like an in-house Discord library! Use Clibs and label your messages to sort and retrieve your important messages/files based on their tags. 
 
-For example, if I hit a clip and uploaded it to a Discord channel, I would use '**!clibs store @celina hitaclip**' ace in the same message, and Clibs will store the reference to that clip. Later, if I wanted to retrieve all my clips, I would use '**!clibs get @celina**' to return a list of references to clips that I tagged as @celina in the channel. 
+For example, if I hit a clip and uploaded it to a Discord channel, I would use '**!clibs store @celina hitaclip ace**' in the same message, and Clibs will store the reference to that clip. Later, if I wanted to retrieve all my clips, I would use '**!clibs get @celina**' to return a list of references to clips that I tagged as @celina in the channel. 
 
 # 📑 Commands 📑
 | Command | Description | Example |
