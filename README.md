@@ -21,4 +21,4 @@ Released under the [Apache License 2.0 license](https://github.com/celinashen/cl
   
 ## 🧰 How It's Made 🧰
 This bot was made using Discord.js, MongoDB, Node, and Javascript :) <br/>
-
+Icons made by [Freepik](https://www.freepik.com) from [Flaticon](https://www.flaticon.com/).
