@@ -66,8 +66,6 @@ client.on('messageCreate', async (message) => {
         messageDisplay = messageDisplayArray.join(' ')
     }
 
-    console.log(messageDisplay)
-
     const serverId = message.guild.id
     const channelId = message.channel.id
     const messageId = message.id
@@ -75,10 +73,10 @@ client.on('messageCreate', async (message) => {
     const messageName = messageDisplay
     const messageLink = `https://discordapp.com/channels/${serverId}/${channelId}/${messageId}`
 
-    console.log("Server ID: ", serverId)
-    console.log("Channel ID: ", channelId)
-    console.log("Tag Name: ", tagString)
-    console.log("Message Name: ", messageDisplay)
+    // console.log("Server ID: ", serverId)
+    // console.log("Channel ID: ", channelId)
+    // console.log("Tag Name: ", tagString)
+    // console.log("Message Name: ", messageDisplay)
 
     if(command === 'store' && args.length >= 4){ //Store messages in a database
 
