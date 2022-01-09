@@ -26,7 +26,7 @@ module.exports = {
             { name: '\u2753 !clibs info', value: "Learn about Clibs's commands"},
             { name: ':inbox_tray: !clibs store <tag-name> <message-name>', value: 'Use this command in the message you want to save with a tag name (must not include spaces)'},
             { name: ':mailbox_with_mail: !clibs get <tag-name>', value: 'Retrieve all messages/files that are stored under <tag-name>'},
-            { name: ':bookmark_tabs: !clibs display <tag-name>', value: 'Retrieve all tags in a channel.'},
+            { name: ':bookmark_tabs: !clibs display', value: 'Retrieve all tags in a channel.'},
             { name: ':wastebasket: !clibs delete <tag-name>', value: 'Delete all the messages tagged by <tag-name> in your library.'},
             { name: ':x: !clibs delete <tag-name> <message-name>', value: 'Delete a specific message under the <tag-name> in your library.'},
             //{ name: '!clibs delete <tag-name>', value: 'Delete all the messages tagged by <tag-name> in your library.', inline: true},
