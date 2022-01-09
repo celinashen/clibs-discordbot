@@ -20,5 +20,5 @@ For example, if I hit a clip and uploaded it to a Discord channel, I would use '
 Released under the [Apache License 2.0 license](https://github.com/celinashen/clibs-discordbot/blob/main/LICENSE).
   
 ## 🧰 How It's Made 🧰
-This bot was made using Discord.js, MongoDB, Node, and Javascript :) <br/>
+This bot was made using [Discord.js](https://discord.js.org/#/), [MongoDB](https://www.mongodb.com/), [Node.js](https://nodejs.org/en/), [Heroku](https://www.heroku.com/), and Javascript :) <br/>
 Icons made by [Freepik](https://www.freepik.com) from [Flaticon](https://www.flaticon.com/).
