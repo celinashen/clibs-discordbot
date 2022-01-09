@@ -27,14 +27,6 @@ for (const file of commandFiles) {
 
 client.once('ready', async () => {
 
-    client.user.setPresence({
-        status: "online",  //You can show online, idle....
-        game: {
-            name: "Using !clibs info",  //The message shown
-            type: "LISTENING" //PLAYING: WATCHING: LISTENING: STREAMING:
-        }
-    });
-
     await mongoose.connect(
         mongo_uri,
         {
@@ -43,7 +35,10 @@ client.once('ready', async () => {
             keepAlive: true
         }
     ).then(() => {
+        client.user.setActivity(' | Use !clibs info', { type: 'WATCHING' }) // STREAMING, WATCHING, CUSTOM_STATUS, PLAYING, COMPETING    
+
         console.log('Clibs is online')
+        
     }).catch((err) => { 
         console.log(err)
     })
