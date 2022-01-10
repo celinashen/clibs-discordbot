@@ -44,6 +44,309 @@ client.once('ready', async () => {
     })
 });
 
+client.on('messageUpdate', async (oldMessage, newMessage) => {
+        
+    if (newMessage.content === "hello") {
+        oldMessage.channel.send("World");
+    }
+    if (newMessage.content === "hi") {
+        oldMessage.channel.send("There");
+    }
+
+    if (!newMessage.content.startsWith(prefix) || newMessage.author.bot) return;
+
+    const args = newMessage.content.slice(prefix.length).split(/ +/);
+
+    let command = ""
+    let tag = ""
+    let messageDisplay = ""
+
+    if(args[1]){
+        command = args[1].toLowerCase();
+    }
+    if (args[2]){
+        tag = args[2].toLowerCase();
+    }
+    if (args[3]){
+        messageDisplayArray = args.slice(3,args.length)
+        messageDisplay = messageDisplayArray.join(' ')
+    }
+
+    const serverId = oldMessage.guild.id
+    const channelId = oldMessage.channel.id
+    const messageId = oldMessage.id
+    const tagString = tag
+    const messageName = messageDisplay
+    const messageLink = `https://discordapp.com/channels/${serverId}/${channelId}/${messageId}`
+
+    // console.log("Server ID: ", serverId)
+    // console.log("Channel ID: ", channelId)
+    // console.log("Tag Name: ", tagString)
+    // console.log("Message Name: ", messageDisplay)
+
+    if(command === 'store' && args.length >= 4){ //Store messages in a database
+
+        const guildReq = await clibsStorage.findOne( {guild_id: serverId} )
+
+        //If server doesn't exist, add new document with new info
+        if(!guildReq){
+            const newGuildUpdate = new clibsStorage({
+                guild_id: serverId,
+                channels: [
+                    {
+                        channel_id:channelId, 
+                        tags: [
+                            {
+                                tag_name: tagString,
+                                messages: [
+                                    {
+                                        display_message: messageName,
+                                        message_link: messageLink
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            });
+            await newGuildUpdate.save();
+        } else { //If guild already exists, check if channel exists in the channels array of the document
+            const channelReq = await clibsStorage.findOne({
+                $and: [
+                    {guild_id: serverId},
+                    {
+                        channels:{
+                            $elemMatch:{
+                                channel_id: channelId
+                            }
+                        }
+                    }
+                ]
+            })
+            if (!channelReq){ //If this is a new message in the channel, create a new channel entry
+                const newChannelUpdate = await clibsStorage.updateOne(
+                    { guild_id: serverId },
+                    {
+                        $push:{
+                            channels: {
+                                channel_id: channelId,
+                                tags: [
+                                    {
+                                        tag_name: tagString,
+                                        messages: [
+                                            {
+                                                display_message: messageName,
+                                                message_link: messageLink
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                )
+            }
+            else { //Check if tag already exists, if it doesn't, create a new one
+                const tagReq = await clibsStorage.findOne({
+                    $and: [
+                        {guild_id: serverId},
+                        {
+                            channels:{
+                                $elemMatch:{
+                                    channel_id: channelId,
+                                    tags: {
+                                        $elemMatch: {
+                                            tag_name: tagString
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                })
+                if(!tagReq){ //If tag doesn't exist, create a new tag in tag array
+                    const newTagUpdate = await clibsStorage.updateOne({
+                            $and: [
+                                {guild_id: serverId},
+                                {
+                                    channels:{
+                                        $elemMatch:{
+                                            channel_id: channelId
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            $push: {
+                                "channels.$[channel].tags":{
+                                    tag_name: tagString,
+                                    messages: [
+                                        {
+                                            display_message: messageName,
+                                            message_link: messageLink
+                                        }
+                                    ] 
+                                }
+                            }
+                        },
+                        {
+                            arrayFilters: [
+                                { "channel.channel_id": channelId}
+                            ]
+                        }
+                    )
+                } else { //If tag exists, store new message + link
+                    const newMessageUpdate = await clibsStorage.updateOne({
+                        $and: [
+                            {guild_id: serverId},
+                            {
+                                channels:{
+                                    $elemMatch:{
+                                        channel_id: channelId,
+                                        tags: {
+                                            $elemMatch: {
+                                                tag_name: tagString
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        $push: {
+                            "channels.$[channel].tags.$[tag].messages": {
+                                display_message: messageName,
+                                message_link: messageLink
+                            }
+                        }
+                    },
+                    {
+                        arrayFilters: [
+                            { "channel.channel_id": channelId },
+                            { "tag.tag_name": tagString }
+                        ]
+                    }
+                )
+                }
+            }
+        }
+        await client.commands.get('store').execute(newMessage,command,tag);
+    } else if (command === 'get' && args.length === 3){ //Get all messages under a tag
+        const getMessages = await clibsStorage.aggregate([
+            {
+                $match: { 
+                    "guild_id": serverId,
+                    "channels.channel_id": channelId,
+                    "channels.tags.tag_name": tagString
+                }
+            },
+            // the following $unwind stages will convert your arrays
+            // to objects, so it would be easier to filter the messages
+            { $unwind: "$channels" },
+            { $unwind: "$channels.tags" },
+            { $unwind: "$channels.tags.messages" },
+            {
+                $match: {
+                    "channels.tags.tag_name": tagString
+                }
+            },
+            {
+                $replaceWith: '$channels.tags.messages' //Return the array instead of the document
+            }
+        ])
+        client.commands.get('get').execute(newMessage,getMessages, tagString);
+
+    } else if (command === 'delete' && args.length === 3){ //Delete a tag
+        const deleteTag = await clibsStorage.updateOne({
+            $and: [
+                {guild_id: serverId},
+                {
+                    channels:{
+                        $elemMatch:{
+                            channel_id: channelId
+                        }
+                    }
+                }
+            ]},
+            {
+                $pull: {
+                    "channels.$[channel].tags":{
+                        tag_name: tagString,
+                    }
+                }
+            },
+            {
+                arrayFilters: [
+                    { "channel.channel_id": channelId }
+                ]
+            }
+        )
+        oldMessage.channel.send(`${tagString} and its messages are deleted.`)
+
+        
+    } else if (command === 'delete' && args.length >= 4){ //Delete a specific message
+        const deleteMessage = await clibsStorage.updateOne({
+            $and: [
+                {guild_id: serverId},
+                {
+                    channels:{
+                        $elemMatch:{
+                            channel_id: channelId
+                        }
+                    }
+                }
+            ]},
+            {
+                $pull: {
+                    "channels.$[channel].tags.$[tag].messages":{
+                        display_message: messageName,
+                    }
+                }
+            },
+            {
+                arrayFilters: [
+                    { "channel.channel_id": channelId },
+                    { "tag.tag_name": tagString }
+                ]
+            }
+        )
+        oldMessage.channel.send(`${messageName} was deleted.`)
+        
+    } else if (command === "display" && args.length === 2){
+
+        const getTags = await clibsStorage.aggregate([
+            {
+                $match: { 
+                    "guild_id": serverId,
+                    "channels.channel_id": channelId,
+                }
+            },
+            // the following $unwind stages will convert your arrays
+            // to objects, so it would be easier to filter the messages
+            { $unwind: "$channels" },
+            { $unwind: "$channels.tags" },
+            {
+                $match: {
+                    "channels.channel_id": channelId
+                }
+            },
+            {
+                $replaceWith: '$channels.tags' //Return the array of tags instead of the document
+            }
+        ])
+        client.commands.get('display').execute(newMessage, getTags);
+
+    } else if (command === "info"){
+        client.commands.get('info').execute(newMessage,command,tag);
+    } else {
+        oldMessage.channel.send("Please try again, that is an invalid command or input the correct number of inputs.")
+        client.commands.get('info').execute(newMessage,command,tag);
+    }
+
+})
+
 
 client.on('messageCreate', async (message) => {
 
